@@ -84,19 +84,24 @@ El Escenario 1 **termina** en la notificación de Slack con dos links (Aprobar/R
 ├── README.md
 ├── Diagrama_Arquitectura_Proyecto_Final.pdf
 ├── prompt_ia.txt
-├── blueprints/
-│   ├── Triage Consultas - Principal.blueprint.json
-│   └── Triage Consultas - Aprobacion HITL.blueprint.json
-├── airtable/
-│   ├── Guia_Configuracion_Airtable.md
-│   ├── Clientes.csv · Consultas.csv · Log_Errores.csv
-└── capturas/
-    ├── 01_flujo_completo_make.png
-    ├── 02_kanban_procesado.png
-    ├── 03_registro_consulta_ia.png
-    ├── 04_output_gemini_json.png
-    ├── 05_ruta_error_log.png
-    └── 06_aprobacion_hitl.png
+│   Triage Consultas - Principal.blueprint.json
+│   Triage Consultas - Aprobacion HITL.blueprint.json
+│   Guia_Configuracion_Airtable.md
+│   Clientes.csv · Consultas.csv · Log_Errores.csv
+│   Cliente_desconocido.png
+│   Cuerpo_vacio.png
+│   Escenario_1_Completo.png
+│   Escenario_2_Completo.png
+│   Flujo_1.png
+│   Flujo_Avanzado.png
+│   Flujo_Completo.png
+│   Flujo_Con_Router.png
+│   Kanban_1.png
+│   Kanban_Errores.png
+│   Mail_De_Aprobacion.png
+│   Mail_De_Respuesta.png
+│   Proceso_1.png
+│   Rechazo_Humano.png
 ```
 
 ## 🎬 Video demo
@@ -111,4 +116,4 @@ El Escenario 1 **termina** en la notificación de Slack con dos links (Aprobar/R
 
 ---
 
-*Desarrollado por Jonatan Remolina — estudio de liquidación de sueldos · Curso Ticher 2026*
+*Desarrollado por Jonatan Remolina — estudio de liquidación de sueldos.
