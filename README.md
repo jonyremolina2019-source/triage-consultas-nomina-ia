@@ -106,7 +106,7 @@ El Escenario 1 **termina** en la notificación de Slack con dos links (Aprobar/R
 
 ## 🎬 Video demo
 
-[PEGAR LINK DEL VIDEO ACÁ] — 3 min: trigger → procesamiento en Make → clasificación IA → aprobación humana → respuesta en el hilo. API keys y credenciales ocultas durante toda la grabación.
+[https://drive.google.com/file/d/14jilDhzUh74e7CISqq2k1psPKBOG3QG0/view?usp=sharing] — 3 min: trigger → procesamiento en Make → clasificación IA → aprobación humana → respuesta en el hilo. API keys y credenciales ocultas durante toda la grabación.
 
 ## 🔒 Seguridad
 
