@@ -1,0 +1,955 @@
+{
+    "name": "Triage Consultas - Aprobacion HITL",
+    "flow": [
+        {
+            "id": 1,
+            "module": "gateway:CustomWebHook",
+            "version": 1,
+            "parameters": {
+                "hook": 2614550,
+                "maxResults": 1
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 0
+                },
+                "restore": {
+                    "parameters": {
+                        "hook": {
+                            "data": {
+                                "editable": "true"
+                            },
+                            "label": "Aprobacion Consultas"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "hook",
+                        "type": "hook:gateway-webhook",
+                        "label": "Webhook",
+                        "required": true
+                    },
+                    {
+                        "name": "maxResults",
+                        "type": "number",
+                        "label": "Maximum number of results"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 7,
+            "module": "airtable:ActionGetRecord",
+            "version": 3,
+            "parameters": {
+                "__IMTCONN__": 10016838
+            },
+            "filter": null,
+            "mapper": {
+                "id": "{{1.id_consulta}}",
+                "base": "appOIWJkEtmqtST5U",
+                "table": "tbluOAwH2ckQxkWZc",
+                "useColumnId": false
+            },
+            "metadata": {
+                "designer": {
+                    "x": 600,
+                    "y": 0
+                },
+                "restore": {
+                    "expect": {
+                        "base": {
+                            "mode": "chose",
+                            "label": "Triage_Consultas_Nomina"
+                        },
+                        "table": {
+                            "mode": "chose",
+                            "label": "Consultas"
+                        },
+                        "useColumnId": {
+                            "mode": "chose"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "airtable3"
+                            },
+                            "label": "Airtable Jony (User ID: usr4CoiQCAowxonTO)"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:airtable3,airtable2",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "base",
+                        "type": "select",
+                        "label": "Base",
+                        "required": true
+                    },
+                    {
+                        "name": "useColumnId",
+                        "type": "boolean",
+                        "label": "Use Column ID",
+                        "required": true
+                    },
+                    {
+                        "name": "table",
+                        "type": "select",
+                        "label": "Table",
+                        "required": true
+                    },
+                    {
+                        "name": "id",
+                        "type": "text",
+                        "label": "Record ID",
+                        "required": true
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "id",
+                        "type": "text",
+                        "label": "ID"
+                    },
+                    {
+                        "name": "createdTime",
+                        "type": "date",
+                        "label": "Created Time"
+                    },
+                    {
+                        "name": "Asunto",
+                        "type": "text",
+                        "label": "Asunto",
+                        "multiline": true
+                    },
+                    {
+                        "name": "Email remitente",
+                        "type": "text",
+                        "label": "Email remitente"
+                    },
+                    {
+                        "name": "Cuerpo",
+                        "type": "text",
+                        "label": "Cuerpo",
+                        "multiline": true
+                    },
+                    {
+                        "name": "Thread ID",
+                        "type": "text",
+                        "label": "Thread ID",
+                        "multiline": true
+                    },
+                    {
+                        "name": "Categoria IA",
+                        "type": "text",
+                        "label": "Categoria IA"
+                    },
+                    {
+                        "name": "Urgencia",
+                        "type": "text",
+                        "label": "Urgencia"
+                    },
+                    {
+                        "name": "Borrador respuesta",
+                        "type": "text",
+                        "label": "Borrador respuesta",
+                        "multiline": true
+                    },
+                    {
+                        "name": "Estado",
+                        "type": "text",
+                        "label": "Estado"
+                    },
+                    {
+                        "name": "Fecha envio",
+                        "time": false,
+                        "type": "date",
+                        "label": "Fecha envio"
+                    },
+                    {
+                        "name": "Cliente",
+                        "spec": {
+                            "label": "Record ID"
+                        },
+                        "type": "array",
+                        "label": "Cliente"
+                    },
+                    {
+                        "name": "Errores",
+                        "spec": {
+                            "label": "Record ID"
+                        },
+                        "type": "array",
+                        "label": "Errores"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 3,
+            "module": "builtin:BasicRouter",
+            "version": 1,
+            "mapper": null,
+            "metadata": {
+                "designer": {
+                    "x": 900,
+                    "y": 0
+                }
+            },
+            "routes": [
+                {
+                    "flow": [
+                        {
+                            "id": 8,
+                            "module": "google-email:sendAnEmail",
+                            "version": 4,
+                            "parameters": {
+                                "__IMTCONN__": 10016707
+                            },
+                            "filter": {
+                                "name": "Aprobado",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{1.decision}}",
+                                            "b": "aprobar",
+                                            "o": "text:equal"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "to": [
+                                    "{{7.`Email remitente`}}"
+                                ],
+                                "content": "{{7.`Borrador respuesta`}}",
+                                "subject": "Re: {{7.Asunto}}",
+                                "bodyType": "rawHtml"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1200,
+                                    "y": -150
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "cc": {
+                                            "mode": "chose"
+                                        },
+                                        "to": {
+                                            "mode": "chose",
+                                            "items": [
+                                                null
+                                            ]
+                                        },
+                                        "bcc": {
+                                            "mode": "chose"
+                                        },
+                                        "from": {
+                                            "mode": "chose"
+                                        },
+                                        "bodyType": {
+                                            "label": "Raw HTML"
+                                        },
+                                        "attachments": {
+                                            "mode": "chose"
+                                        },
+                                        "emailHeaders": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "google-email"
+                                            },
+                                            "label": "My Gmail connection (jonyremolina2019@gmail.com)"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:google-email",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "to",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "email",
+                                            "label": "Recipient email address",
+                                            "required": true,
+                                            "validate": true
+                                        },
+                                        "type": "array",
+                                        "label": "To",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "subject",
+                                        "type": "text",
+                                        "label": "Subject"
+                                    },
+                                    {
+                                        "name": "bodyType",
+                                        "type": "select",
+                                        "label": "Body type",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "rawHtml",
+                                                "collection"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "attachments",
+                                        "spec": {
+                                            "name": "value",
+                                            "spec": [
+                                                {
+                                                    "name": "filename",
+                                                    "type": "filename",
+                                                    "label": "File name",
+                                                    "required": true,
+                                                    "semantic": "file:name"
+                                                },
+                                                {
+                                                    "name": "data",
+                                                    "type": "buffer",
+                                                    "label": "Data",
+                                                    "required": true,
+                                                    "semantic": "file:data"
+                                                }
+                                            ],
+                                            "type": "collection",
+                                            "label": "Attachment"
+                                        },
+                                        "type": "array",
+                                        "label": "Attachments"
+                                    },
+                                    {
+                                        "name": "from",
+                                        "type": "select",
+                                        "label": "From"
+                                    },
+                                    {
+                                        "name": "cc",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "email",
+                                            "label": "Recipient email address"
+                                        },
+                                        "type": "array",
+                                        "label": "CC recipients"
+                                    },
+                                    {
+                                        "name": "bcc",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "email",
+                                            "label": "Recipient email address"
+                                        },
+                                        "type": "array",
+                                        "label": "BCC recipients"
+                                    },
+                                    {
+                                        "name": "emailHeaders",
+                                        "spec": {
+                                            "name": "value",
+                                            "spec": [
+                                                {
+                                                    "name": "key",
+                                                    "type": "text",
+                                                    "label": "Key",
+                                                    "required": true
+                                                },
+                                                {
+                                                    "name": "value",
+                                                    "type": "text",
+                                                    "label": "Value"
+                                                }
+                                            ],
+                                            "type": "collection",
+                                            "label": "Email header"
+                                        },
+                                        "type": "array",
+                                        "label": "Additional email headers"
+                                    },
+                                    {
+                                        "name": "content",
+                                        "type": "text",
+                                        "label": "Content"
+                                    }
+                                ],
+                                "advanced": true
+                            }
+                        },
+                        {
+                            "id": 9,
+                            "module": "airtable:ActionUpdateRecords",
+                            "version": 3,
+                            "parameters": {
+                                "__IMTCONN__": 10016838
+                            },
+                            "mapper": {
+                                "id": "{{1.id_consulta}}",
+                                "base": "appOIWJkEtmqtST5U",
+                                "table": "tbluOAwH2ckQxkWZc",
+                                "record": {
+                                    "fldilwyq7SbceSZ9Z": "Enviado"
+                                },
+                                "typecast": false,
+                                "useColumnId": false
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1800,
+                                    "y": -150
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "base": {
+                                            "label": "Triage_Consultas_Nomina"
+                                        },
+                                        "table": {
+                                            "label": "Consultas"
+                                        },
+                                        "record": {
+                                            "nested": {
+                                                "fldSFIBwtztX8O4v7": {
+                                                    "mode": "edit"
+                                                },
+                                                "fldaoW0n6GnBEhJ7f": {
+                                                    "mode": "chose"
+                                                },
+                                                "fldilwyq7SbceSZ9Z": {
+                                                    "mode": "edit"
+                                                },
+                                                "fldjju4MJZvJ9ntm1": {
+                                                    "mode": "chose"
+                                                },
+                                                "fldtb3B5lCfWCjUH8": {
+                                                    "mode": "edit"
+                                                }
+                                            }
+                                        },
+                                        "typecast": {
+                                            "mode": "chose"
+                                        },
+                                        "useColumnId": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "airtable3"
+                                            },
+                                            "label": "Airtable Jony (User ID: usr4CoiQCAowxonTO)"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:airtable3,airtable2",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "base",
+                                        "type": "select",
+                                        "label": "Base",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "typecast",
+                                        "type": "boolean",
+                                        "label": "Smart links",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "useColumnId",
+                                        "type": "boolean",
+                                        "label": "Use Column ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "table",
+                                        "type": "select",
+                                        "label": "Table",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "id",
+                                        "type": "text",
+                                        "label": "Record ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "record",
+                                        "spec": [
+                                            {
+                                                "name": "fldcZ7ar0W0JbM5IS",
+                                                "type": "text",
+                                                "label": "Asunto"
+                                            },
+                                            {
+                                                "name": "fld6TPf6aQzTbqqux",
+                                                "type": "text",
+                                                "label": "Email remitente"
+                                            },
+                                            {
+                                                "name": "fld4lUwBDV5GlCDpX",
+                                                "type": "text",
+                                                "label": "Cuerpo"
+                                            },
+                                            {
+                                                "name": "fldMVcNT3u3HE67Wu",
+                                                "type": "text",
+                                                "label": "Thread ID"
+                                            },
+                                            {
+                                                "mode": "edit",
+                                                "name": "fldSFIBwtztX8O4v7",
+                                                "type": "select",
+                                                "label": "Categoria IA"
+                                            },
+                                            {
+                                                "mode": "edit",
+                                                "name": "fldtb3B5lCfWCjUH8",
+                                                "type": "select",
+                                                "label": "Urgencia"
+                                            },
+                                            {
+                                                "name": "fldws8Zs3BeDHgQ8Z",
+                                                "type": "text",
+                                                "label": "Borrador respuesta"
+                                            },
+                                            {
+                                                "mode": "edit",
+                                                "name": "fldilwyq7SbceSZ9Z",
+                                                "type": "select",
+                                                "label": "Estado"
+                                            },
+                                            {
+                                                "name": "fld3QktBVATperSLC",
+                                                "time": false,
+                                                "type": "date",
+                                                "label": "Fecha envio"
+                                            },
+                                            {
+                                                "name": "fldjju4MJZvJ9ntm1",
+                                                "spec": {
+                                                    "name": "value",
+                                                    "label": "Record ID"
+                                                },
+                                                "type": "array",
+                                                "label": "Cliente"
+                                            },
+                                            {
+                                                "name": "fldaoW0n6GnBEhJ7f",
+                                                "spec": {
+                                                    "name": "value",
+                                                    "label": "Record ID"
+                                                },
+                                                "type": "array",
+                                                "label": "Errores"
+                                            }
+                                        ],
+                                        "type": "collection",
+                                        "label": "Record"
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "name": "id",
+                                        "type": "text",
+                                        "label": "ID"
+                                    },
+                                    {
+                                        "name": "createdTime",
+                                        "type": "date",
+                                        "label": "Created Time"
+                                    },
+                                    {
+                                        "name": "Asunto",
+                                        "type": "text",
+                                        "label": "Asunto",
+                                        "multiline": true
+                                    },
+                                    {
+                                        "name": "Email remitente",
+                                        "type": "text",
+                                        "label": "Email remitente"
+                                    },
+                                    {
+                                        "name": "Cuerpo",
+                                        "type": "text",
+                                        "label": "Cuerpo",
+                                        "multiline": true
+                                    },
+                                    {
+                                        "name": "Thread ID",
+                                        "type": "text",
+                                        "label": "Thread ID",
+                                        "multiline": true
+                                    },
+                                    {
+                                        "name": "Categoria IA",
+                                        "type": "text",
+                                        "label": "Categoria IA"
+                                    },
+                                    {
+                                        "name": "Urgencia",
+                                        "type": "text",
+                                        "label": "Urgencia"
+                                    },
+                                    {
+                                        "name": "Borrador respuesta",
+                                        "type": "text",
+                                        "label": "Borrador respuesta",
+                                        "multiline": true
+                                    },
+                                    {
+                                        "name": "Estado",
+                                        "type": "text",
+                                        "label": "Estado"
+                                    },
+                                    {
+                                        "name": "Fecha envio",
+                                        "time": false,
+                                        "type": "date",
+                                        "label": "Fecha envio"
+                                    },
+                                    {
+                                        "name": "Cliente",
+                                        "spec": {
+                                            "label": "Record ID"
+                                        },
+                                        "type": "array",
+                                        "label": "Cliente"
+                                    },
+                                    {
+                                        "name": "Errores",
+                                        "spec": {
+                                            "label": "Record ID"
+                                        },
+                                        "type": "array",
+                                        "label": "Errores"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "flow": [
+                        {
+                            "id": 11,
+                            "module": "airtable:ActionUpdateRecords",
+                            "version": 3,
+                            "parameters": {
+                                "__IMTCONN__": 10016838
+                            },
+                            "mapper": {
+                                "id": "{{1.id_consulta}}",
+                                "base": "appOIWJkEtmqtST5U",
+                                "table": "tbluOAwH2ckQxkWZc",
+                                "record": {
+                                    "fldilwyq7SbceSZ9Z": "Rechazado"
+                                },
+                                "typecast": false,
+                                "useColumnId": false
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1200,
+                                    "y": 150
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "base": {
+                                            "label": "Triage_Consultas_Nomina"
+                                        },
+                                        "table": {
+                                            "label": "Consultas"
+                                        },
+                                        "record": {
+                                            "nested": {
+                                                "fldSFIBwtztX8O4v7": {
+                                                    "mode": "edit"
+                                                },
+                                                "fldaoW0n6GnBEhJ7f": {
+                                                    "mode": "chose"
+                                                },
+                                                "fldilwyq7SbceSZ9Z": {
+                                                    "mode": "edit"
+                                                },
+                                                "fldjju4MJZvJ9ntm1": {
+                                                    "mode": "chose"
+                                                },
+                                                "fldtb3B5lCfWCjUH8": {
+                                                    "mode": "edit"
+                                                }
+                                            }
+                                        },
+                                        "typecast": {
+                                            "mode": "chose"
+                                        },
+                                        "useColumnId": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "airtable3"
+                                            },
+                                            "label": "Airtable Jony (User ID: usr4CoiQCAowxonTO)"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:airtable3,airtable2",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "base",
+                                        "type": "select",
+                                        "label": "Base",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "typecast",
+                                        "type": "boolean",
+                                        "label": "Smart links",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "useColumnId",
+                                        "type": "boolean",
+                                        "label": "Use Column ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "table",
+                                        "type": "select",
+                                        "label": "Table",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "id",
+                                        "type": "text",
+                                        "label": "Record ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "record",
+                                        "spec": [
+                                            {
+                                                "name": "fldcZ7ar0W0JbM5IS",
+                                                "type": "text",
+                                                "label": "Asunto"
+                                            },
+                                            {
+                                                "name": "fld6TPf6aQzTbqqux",
+                                                "type": "text",
+                                                "label": "Email remitente"
+                                            },
+                                            {
+                                                "name": "fld4lUwBDV5GlCDpX",
+                                                "type": "text",
+                                                "label": "Cuerpo"
+                                            },
+                                            {
+                                                "name": "fldMVcNT3u3HE67Wu",
+                                                "type": "text",
+                                                "label": "Thread ID"
+                                            },
+                                            {
+                                                "mode": "edit",
+                                                "name": "fldSFIBwtztX8O4v7",
+                                                "type": "select",
+                                                "label": "Categoria IA"
+                                            },
+                                            {
+                                                "mode": "edit",
+                                                "name": "fldtb3B5lCfWCjUH8",
+                                                "type": "select",
+                                                "label": "Urgencia"
+                                            },
+                                            {
+                                                "name": "fldws8Zs3BeDHgQ8Z",
+                                                "type": "text",
+                                                "label": "Borrador respuesta"
+                                            },
+                                            {
+                                                "mode": "edit",
+                                                "name": "fldilwyq7SbceSZ9Z",
+                                                "type": "select",
+                                                "label": "Estado"
+                                            },
+                                            {
+                                                "name": "fld3QktBVATperSLC",
+                                                "time": false,
+                                                "type": "date",
+                                                "label": "Fecha envio"
+                                            },
+                                            {
+                                                "name": "fldjju4MJZvJ9ntm1",
+                                                "spec": {
+                                                    "name": "value",
+                                                    "label": "Record ID"
+                                                },
+                                                "type": "array",
+                                                "label": "Cliente"
+                                            },
+                                            {
+                                                "name": "fldaoW0n6GnBEhJ7f",
+                                                "spec": {
+                                                    "name": "value",
+                                                    "label": "Record ID"
+                                                },
+                                                "type": "array",
+                                                "label": "Errores"
+                                            }
+                                        ],
+                                        "type": "collection",
+                                        "label": "Record"
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "name": "id",
+                                        "type": "text",
+                                        "label": "ID"
+                                    },
+                                    {
+                                        "name": "createdTime",
+                                        "type": "date",
+                                        "label": "Created Time"
+                                    },
+                                    {
+                                        "name": "Asunto",
+                                        "type": "text",
+                                        "label": "Asunto",
+                                        "multiline": true
+                                    },
+                                    {
+                                        "name": "Email remitente",
+                                        "type": "text",
+                                        "label": "Email remitente"
+                                    },
+                                    {
+                                        "name": "Cuerpo",
+                                        "type": "text",
+                                        "label": "Cuerpo",
+                                        "multiline": true
+                                    },
+                                    {
+                                        "name": "Thread ID",
+                                        "type": "text",
+                                        "label": "Thread ID",
+                                        "multiline": true
+                                    },
+                                    {
+                                        "name": "Categoria IA",
+                                        "type": "text",
+                                        "label": "Categoria IA"
+                                    },
+                                    {
+                                        "name": "Urgencia",
+                                        "type": "text",
+                                        "label": "Urgencia"
+                                    },
+                                    {
+                                        "name": "Borrador respuesta",
+                                        "type": "text",
+                                        "label": "Borrador respuesta",
+                                        "multiline": true
+                                    },
+                                    {
+                                        "name": "Estado",
+                                        "type": "text",
+                                        "label": "Estado"
+                                    },
+                                    {
+                                        "name": "Fecha envio",
+                                        "time": false,
+                                        "type": "date",
+                                        "label": "Fecha envio"
+                                    },
+                                    {
+                                        "name": "Cliente",
+                                        "spec": {
+                                            "label": "Record ID"
+                                        },
+                                        "type": "array",
+                                        "label": "Cliente"
+                                    },
+                                    {
+                                        "name": "Errores",
+                                        "spec": {
+                                            "label": "Record ID"
+                                        },
+                                        "type": "array",
+                                        "label": "Errores"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "metadata": {
+        "instant": true,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "us2.make.com",
+        "notes": []
+    }
+}

@@ -1,0 +1,4 @@
+Modulo,Mensaje error,Consulta
+Filtro cliente,"Remitente desconocido@empresa-x.com no encontrado en tabla Clientes. Bundle descartado por ruta alternativa.",
+IA_Clasificar_Responder,"[429] Rate limit exceeded. Directiva Resume aplicada, consulta marcada como Error.",(sin asunto)
+Filtro datos faltantes,"Cuerpo del email vacío. Ejecución cortada antes del módulo IA para evitar consumo de tokens.",(sin asunto)
