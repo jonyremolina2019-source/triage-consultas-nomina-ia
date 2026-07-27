@@ -1,0 +1,2673 @@
+{
+    "name": "Triage Consultas - Principal",
+    "flow": [
+        {
+            "id": 2,
+            "module": "google-email:triggerWatchNewEmails",
+            "version": 4,
+            "parameters": {
+                "from": "",
+                "size": {
+                    "unit": "M",
+                    "amount": null,
+                    "criteria": "larger"
+                },
+                "limit": 1,
+                "folder": "INBOX",
+                "format": "full",
+                "subject": "",
+                "criteria": "all",
+                "labelIds": "",
+                "markSeen": true,
+                "filterType": "simpleSearch",
+                "__IMTCONN__": 10016707,
+                "excludeWords": "",
+                "includeWords": "",
+                "hasAttachment": false
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 0
+                },
+                "restore": {
+                    "parameters": {
+                        "size": {
+                            "nested": {
+                                "unit": {
+                                    "label": "MB (megabytes)"
+                                },
+                                "criteria": {
+                                    "label": "Greater than"
+                                }
+                            }
+                        },
+                        "folder": {
+                            "label": "Inbox"
+                        },
+                        "format": {
+                            "label": "Full content"
+                        },
+                        "criteria": {
+                            "label": "All messages"
+                        },
+                        "labelIds": {
+                            "label": "Empty"
+                        },
+                        "filterType": {
+                            "label": "Simple filter"
+                        },
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "google-email"
+                            },
+                            "label": "My Gmail connection (jonyremolina2019@gmail.com)"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:google-email",
+                        "label": "Connection",
+                        "required": true
+                    },
+                    {
+                        "name": "filterType",
+                        "type": "select",
+                        "label": "Filter type",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "simpleSearch",
+                                "gmailSearch"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "format",
+                        "type": "select",
+                        "label": "Content format",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "full",
+                                "raw",
+                                "metadata",
+                                "minimal"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "folder",
+                        "type": "select",
+                        "label": "Folder",
+                        "required": true
+                    },
+                    {
+                        "name": "labelIds",
+                        "type": "select",
+                        "label": "Label"
+                    },
+                    {
+                        "name": "criteria",
+                        "type": "select",
+                        "label": "Criteria",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "all",
+                                "is:read",
+                                "is:unread"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "markSeen",
+                        "type": "boolean",
+                        "label": "Mark email message(s) as read when fetched"
+                    },
+                    {
+                        "name": "limit",
+                        "type": "uinteger",
+                        "label": "Limit",
+                        "required": true,
+                        "validate": {
+                            "max": 500
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "type": "email",
+                        "label": "Sender email address"
+                    },
+                    {
+                        "name": "subject",
+                        "type": "text",
+                        "label": "Subject"
+                    },
+                    {
+                        "name": "includeWords",
+                        "type": "text",
+                        "label": "Has the words"
+                    },
+                    {
+                        "name": "excludeWords",
+                        "type": "text",
+                        "label": "Doesn't have"
+                    },
+                    {
+                        "name": "size",
+                        "spec": [
+                            {
+                                "name": "criteria",
+                                "type": "select",
+                                "label": "Criteria",
+                                "validate": {
+                                    "enum": [
+                                        "larger",
+                                        "smaller"
+                                    ]
+                                }
+                            },
+                            {
+                                "name": "amount",
+                                "type": "integer",
+                                "label": "Size",
+                                "validate": {
+                                    "min": 0
+                                }
+                            },
+                            {
+                                "name": "unit",
+                                "type": "select",
+                                "label": "Size unit",
+                                "validate": {
+                                    "enum": [
+                                        "M",
+                                        "K",
+                                        "bytes"
+                                    ]
+                                }
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Email size"
+                    },
+                    {
+                        "name": "hasAttachment",
+                        "type": "boolean",
+                        "label": "Only emails with attachments/media",
+                        "required": true
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "id",
+                        "type": "text",
+                        "label": "Message ID"
+                    },
+                    {
+                        "name": "threadId",
+                        "type": "text",
+                        "label": "Thread ID"
+                    },
+                    {
+                        "name": "internalDate",
+                        "type": "date",
+                        "label": "Date"
+                    },
+                    {
+                        "name": "subject",
+                        "type": "text",
+                        "label": "Subject",
+                        "condition": true
+                    },
+                    {
+                        "name": "fromName",
+                        "type": "text",
+                        "label": "From (name)",
+                        "condition": true
+                    },
+                    {
+                        "name": "fromEmail",
+                        "type": "text",
+                        "label": "From (email)",
+                        "condition": true
+                    },
+                    {
+                        "name": "to",
+                        "spec": {
+                            "spec": [
+                                {
+                                    "name": "name",
+                                    "type": "text",
+                                    "label": "Name"
+                                },
+                                {
+                                    "name": "email",
+                                    "type": "text",
+                                    "label": "Email"
+                                }
+                            ],
+                            "type": "collection"
+                        },
+                        "type": "array",
+                        "label": "To",
+                        "condition": true
+                    },
+                    {
+                        "name": "cc",
+                        "spec": [
+                            {
+                                "name": "email",
+                                "type": "email",
+                                "label": "Email"
+                            },
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Name"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "CC",
+                        "condition": true
+                    },
+                    {
+                        "name": "bcc",
+                        "spec": [
+                            {
+                                "name": "email",
+                                "type": "email",
+                                "label": "Email"
+                            },
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Name"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "BCC",
+                        "condition": true
+                    },
+                    {
+                        "name": "snippet",
+                        "type": "text",
+                        "label": "Snippet"
+                    },
+                    {
+                        "name": "fullTextBody",
+                        "type": "text",
+                        "label": "Full text body",
+                        "condition": true
+                    },
+                    {
+                        "name": "htmlBody",
+                        "type": "text",
+                        "label": "HTML body",
+                        "condition": true
+                    },
+                    {
+                        "name": "hasAttachment",
+                        "type": "boolean",
+                        "label": "Has attachment",
+                        "condition": true
+                    },
+                    {
+                        "name": "hasMedia",
+                        "type": "boolean",
+                        "label": "Has media",
+                        "condition": true
+                    },
+                    {
+                        "name": "sysFolders",
+                        "spec": [
+                            {
+                                "name": "id",
+                                "type": "text",
+                                "label": "System folder ID"
+                            },
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "System folder name"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "System folders"
+                    },
+                    {
+                        "name": "categoryFolders",
+                        "spec": [
+                            {
+                                "name": "id",
+                                "type": "text",
+                                "label": "Category folder ID"
+                            },
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "Category folder name"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Category folders"
+                    },
+                    {
+                        "name": "userLabelFolders",
+                        "spec": [
+                            {
+                                "name": "id",
+                                "type": "text",
+                                "label": "User label folder ID"
+                            },
+                            {
+                                "name": "name",
+                                "type": "text",
+                                "label": "User label folder name"
+                            }
+                        ],
+                        "type": "array",
+                        "label": "User label folders"
+                    },
+                    {
+                        "name": "labelIds",
+                        "spec": {
+                            "type": "text"
+                        },
+                        "type": "array",
+                        "label": "Message folder IDs"
+                    },
+                    {
+                        "name": "headers",
+                        "spec": [
+                            {
+                                "name": "Delivered-To",
+                                "type": "text",
+                                "label": "Delivered-To"
+                            },
+                            {
+                                "name": "Received",
+                                "type": "text",
+                                "label": "Received"
+                            },
+                            {
+                                "name": "Date",
+                                "type": "text",
+                                "label": "Date (header)"
+                            },
+                            {
+                                "name": "X-Original-Sender",
+                                "type": "text"
+                            },
+                            {
+                                "name": "Reply-To",
+                                "type": "text"
+                            },
+                            {
+                                "name": "Subject",
+                                "type": "text",
+                                "label": "Subject"
+                            },
+                            {
+                                "name": "From",
+                                "type": "text",
+                                "label": "From"
+                            },
+                            {
+                                "name": "To",
+                                "type": "text",
+                                "label": "To"
+                            },
+                            {
+                                "name": "Message-ID",
+                                "type": "text",
+                                "label": "Message-ID"
+                            },
+                            {
+                                "name": "In-Reply-To",
+                                "type": "text",
+                                "label": "In-Reply-To"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Headers",
+                        "condition": true
+                    },
+                    {
+                        "name": "sizeEstimate",
+                        "type": "number",
+                        "label": "Size estimate"
+                    },
+                    {
+                        "name": "historyId",
+                        "type": "text",
+                        "label": "History ID"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 3,
+            "module": "airtable:ActionSearchRecords",
+            "version": 3,
+            "parameters": {
+                "__IMTCONN__": 10016838
+            },
+            "mapper": {
+                "base": "appOIWJkEtmqtST5U",
+                "table": "tblYedMdNUu5nFi3u",
+                "formula": "{Email contacto} = \"{{2.fromEmail}}\"",
+                "maxRecords": "1",
+                "useColumnId": false
+            },
+            "metadata": {
+                "designer": {
+                    "x": 300,
+                    "y": 0
+                },
+                "restore": {
+                    "expect": {
+                        "base": {
+                            "mode": "chose",
+                            "label": "Triage_Consultas_Nomina"
+                        },
+                        "sort": {
+                            "mode": "chose"
+                        },
+                        "view": {
+                            "mode": "chose"
+                        },
+                        "table": {
+                            "mode": "chose",
+                            "label": "Clientes"
+                        },
+                        "fields": {
+                            "mode": "chose"
+                        },
+                        "useColumnId": {
+                            "mode": "chose"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "airtable3"
+                            },
+                            "label": "Airtable Jony (User ID: usr4CoiQCAowxonTO)"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:airtable3,airtable2",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "base",
+                        "type": "select",
+                        "label": "Base",
+                        "required": true
+                    },
+                    {
+                        "name": "useColumnId",
+                        "type": "boolean",
+                        "label": "Use Column ID",
+                        "required": true
+                    },
+                    {
+                        "name": "table",
+                        "type": "select",
+                        "label": "Table",
+                        "required": true
+                    },
+                    {
+                        "name": "formula",
+                        "type": "text",
+                        "label": "Formula"
+                    },
+                    {
+                        "name": "maxRecords",
+                        "type": "integer",
+                        "label": "Limit"
+                    },
+                    {
+                        "name": "sort",
+                        "spec": [
+                            {
+                                "name": "field",
+                                "type": "select",
+                                "label": "Field",
+                                "dynamic": true,
+                                "options": []
+                            },
+                            {
+                                "name": "direction",
+                                "type": "select",
+                                "label": "Direction",
+                                "options": [
+                                    {
+                                        "label": "Descending",
+                                        "value": "desc"
+                                    },
+                                    {
+                                        "label": "Ascending",
+                                        "value": "asc"
+                                    }
+                                ]
+                            }
+                        ],
+                        "type": "array",
+                        "label": "Sort"
+                    },
+                    {
+                        "name": "view",
+                        "type": "select",
+                        "label": "View"
+                    },
+                    {
+                        "name": "fields",
+                        "type": "select",
+                        "label": "Output Fields",
+                        "multiple": true
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "__IMTLENGTH__",
+                        "type": "uinteger",
+                        "label": "Total number of bundles"
+                    },
+                    {
+                        "name": "__IMTINDEX__",
+                        "type": "uinteger",
+                        "label": "Bundle order position"
+                    },
+                    {
+                        "name": "id",
+                        "type": "text",
+                        "label": "ID"
+                    },
+                    {
+                        "name": "createdTime",
+                        "type": "date",
+                        "label": "Created Time"
+                    },
+                    {
+                        "name": "Nombre empresa",
+                        "type": "text",
+                        "label": "Nombre empresa",
+                        "multiline": true
+                    },
+                    {
+                        "name": "CUIT",
+                        "type": "text",
+                        "label": "CUIT",
+                        "multiline": true
+                    },
+                    {
+                        "name": "Email contacto",
+                        "type": "text",
+                        "label": "Email contacto"
+                    },
+                    {
+                        "name": "CCT aplicable",
+                        "type": "text",
+                        "label": "CCT aplicable"
+                    },
+                    {
+                        "name": "Estado",
+                        "type": "text",
+                        "label": "Estado"
+                    },
+                    {
+                        "name": "Consultas",
+                        "spec": {
+                            "label": "Record ID"
+                        },
+                        "type": "array",
+                        "label": "Consultas"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 12,
+            "module": "builtin:BasicRouter",
+            "version": 1,
+            "parameters": {
+                "else": 1
+            },
+            "filter": null,
+            "mapper": null,
+            "metadata": {
+                "designer": {
+                    "x": 547,
+                    "y": 4
+                }
+            },
+            "routes": [
+                {
+                    "flow": [
+                        {
+                            "id": 5,
+                            "module": "airtable:ActionCreateRecord",
+                            "version": 3,
+                            "parameters": {
+                                "__IMTCONN__": 10016838
+                            },
+                            "filter": {
+                                "name": "Cliente encontrado",
+                                "conditions": [
+                                    [
+                                        {
+                                            "a": "{{3.id}}",
+                                            "o": "exist"
+                                        }
+                                    ]
+                                ]
+                            },
+                            "mapper": {
+                                "base": "appOIWJkEtmqtST5U",
+                                "table": "tbluOAwH2ckQxkWZc",
+                                "record": {
+                                    "fld4lUwBDV5GlCDpX": "{{2.fullTextBody}}",
+                                    "fld6TPf6aQzTbqqux": "{{2.fromEmail}}",
+                                    "fldMVcNT3u3HE67Wu": "{{2.threadId}}",
+                                    "fldcZ7ar0W0JbM5IS": "{{2.subject}}",
+                                    "fldilwyq7SbceSZ9Z": "Pendiente",
+                                    "fldjju4MJZvJ9ntm1": [
+                                        "{{3.id}}"
+                                    ]
+                                },
+                                "typecast": false,
+                                "useColumnId": false
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 847,
+                                    "y": -146
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "base": {
+                                            "label": "Triage_Consultas_Nomina"
+                                        },
+                                        "table": {
+                                            "label": "Consultas",
+                                            "nested": [
+                                                {
+                                                    "name": "record",
+                                                    "spec": [
+                                                        {
+                                                            "name": "fldcZ7ar0W0JbM5IS",
+                                                            "type": "text",
+                                                            "label": "Asunto",
+                                                            "multiline": true
+                                                        },
+                                                        {
+                                                            "name": "fld6TPf6aQzTbqqux",
+                                                            "type": "text",
+                                                            "label": "Email remitente"
+                                                        },
+                                                        {
+                                                            "name": "fld4lUwBDV5GlCDpX",
+                                                            "type": "text",
+                                                            "label": "Cuerpo",
+                                                            "multiline": true
+                                                        },
+                                                        {
+                                                            "name": "fldMVcNT3u3HE67Wu",
+                                                            "type": "text",
+                                                            "label": "Thread ID",
+                                                            "multiline": true
+                                                        },
+                                                        {
+                                                            "mode": "edit",
+                                                            "name": "fldSFIBwtztX8O4v7",
+                                                            "type": "select",
+                                                            "label": "Categoria IA",
+                                                            "dynamic": true,
+                                                            "options": [
+                                                                {
+                                                                    "label": "Liquidación",
+                                                                    "value": "Liquidación"
+                                                                },
+                                                                {
+                                                                    "label": "Documentación",
+                                                                    "value": "Documentación"
+                                                                },
+                                                                {
+                                                                    "label": "ARCA-LSD",
+                                                                    "value": "ARCA-LSD"
+                                                                },
+                                                                {
+                                                                    "label": "Otro",
+                                                                    "value": "Otro"
+                                                                }
+                                                            ],
+                                                            "validate": false
+                                                        },
+                                                        {
+                                                            "mode": "edit",
+                                                            "name": "fldtb3B5lCfWCjUH8",
+                                                            "type": "select",
+                                                            "label": "Urgencia",
+                                                            "dynamic": true,
+                                                            "options": [
+                                                                {
+                                                                    "label": "Media",
+                                                                    "value": "Media"
+                                                                },
+                                                                {
+                                                                    "label": "Alta",
+                                                                    "value": "Alta"
+                                                                },
+                                                                {
+                                                                    "label": "Baja",
+                                                                    "value": "Baja"
+                                                                }
+                                                            ],
+                                                            "validate": false
+                                                        },
+                                                        {
+                                                            "name": "fldws8Zs3BeDHgQ8Z",
+                                                            "type": "text",
+                                                            "label": "Borrador respuesta",
+                                                            "multiline": true
+                                                        },
+                                                        {
+                                                            "mode": "edit",
+                                                            "name": "fldilwyq7SbceSZ9Z",
+                                                            "type": "select",
+                                                            "label": "Estado",
+                                                            "dynamic": true,
+                                                            "options": [
+                                                                {
+                                                                    "label": "Enviado",
+                                                                    "value": "Enviado"
+                                                                },
+                                                                {
+                                                                    "label": "Esperando Aprobación",
+                                                                    "value": "Esperando Aprobación"
+                                                                },
+                                                                {
+                                                                    "label": "Procesado por IA",
+                                                                    "value": "Procesado por IA"
+                                                                },
+                                                                {
+                                                                    "label": "Pendiente",
+                                                                    "value": "Pendiente"
+                                                                },
+                                                                {
+                                                                    "label": "Error",
+                                                                    "value": "Error"
+                                                                },
+                                                                {
+                                                                    "label": "Aprobado",
+                                                                    "value": "Aprobado"
+                                                                },
+                                                                {
+                                                                    "label": "Rechazado",
+                                                                    "value": "Rechazado"
+                                                                }
+                                                            ],
+                                                            "validate": false
+                                                        },
+                                                        {
+                                                            "name": "fld3QktBVATperSLC",
+                                                            "time": false,
+                                                            "type": "date",
+                                                            "label": "Fecha envio"
+                                                        },
+                                                        {
+                                                            "name": "fldjju4MJZvJ9ntm1",
+                                                            "spec": {
+                                                                "label": "Record ID"
+                                                            },
+                                                            "type": "array",
+                                                            "label": "Cliente"
+                                                        },
+                                                        {
+                                                            "name": "fldaoW0n6GnBEhJ7f",
+                                                            "spec": {
+                                                                "label": "Record ID"
+                                                            },
+                                                            "type": "array",
+                                                            "label": "Errores"
+                                                        }
+                                                    ],
+                                                    "type": "collection",
+                                                    "label": "Record"
+                                                }
+                                            ]
+                                        },
+                                        "record": {
+                                            "nested": {
+                                                "fldSFIBwtztX8O4v7": {
+                                                    "mode": "edit"
+                                                },
+                                                "fldaoW0n6GnBEhJ7f": {
+                                                    "mode": "chose"
+                                                },
+                                                "fldilwyq7SbceSZ9Z": {
+                                                    "mode": "edit"
+                                                },
+                                                "fldjju4MJZvJ9ntm1": {
+                                                    "mode": "chose",
+                                                    "items": [
+                                                        null
+                                                    ]
+                                                },
+                                                "fldtb3B5lCfWCjUH8": {
+                                                    "mode": "edit"
+                                                }
+                                            }
+                                        },
+                                        "typecast": {
+                                            "mode": "chose"
+                                        },
+                                        "useColumnId": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "airtable3"
+                                            },
+                                            "label": "Airtable Jony (User ID: usr4CoiQCAowxonTO)"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:airtable3,airtable2",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "base",
+                                        "type": "select",
+                                        "label": "Base",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "typecast",
+                                        "type": "boolean",
+                                        "label": "Smart links",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "useColumnId",
+                                        "type": "boolean",
+                                        "label": "Use Column ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "table",
+                                        "type": "select",
+                                        "label": "Table",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "record",
+                                        "spec": [
+                                            {
+                                                "name": "fldcZ7ar0W0JbM5IS",
+                                                "type": "text",
+                                                "label": "Asunto"
+                                            },
+                                            {
+                                                "name": "fld6TPf6aQzTbqqux",
+                                                "type": "text",
+                                                "label": "Email remitente"
+                                            },
+                                            {
+                                                "name": "fld4lUwBDV5GlCDpX",
+                                                "type": "text",
+                                                "label": "Cuerpo"
+                                            },
+                                            {
+                                                "name": "fldMVcNT3u3HE67Wu",
+                                                "type": "text",
+                                                "label": "Thread ID"
+                                            },
+                                            {
+                                                "mode": "edit",
+                                                "name": "fldSFIBwtztX8O4v7",
+                                                "type": "select",
+                                                "label": "Categoria IA"
+                                            },
+                                            {
+                                                "mode": "edit",
+                                                "name": "fldtb3B5lCfWCjUH8",
+                                                "type": "select",
+                                                "label": "Urgencia"
+                                            },
+                                            {
+                                                "name": "fldws8Zs3BeDHgQ8Z",
+                                                "type": "text",
+                                                "label": "Borrador respuesta"
+                                            },
+                                            {
+                                                "mode": "edit",
+                                                "name": "fldilwyq7SbceSZ9Z",
+                                                "type": "select",
+                                                "label": "Estado"
+                                            },
+                                            {
+                                                "name": "fld3QktBVATperSLC",
+                                                "time": false,
+                                                "type": "date",
+                                                "label": "Fecha envio"
+                                            },
+                                            {
+                                                "name": "fldjju4MJZvJ9ntm1",
+                                                "spec": {
+                                                    "name": "value",
+                                                    "label": "Record ID"
+                                                },
+                                                "type": "array",
+                                                "label": "Cliente"
+                                            },
+                                            {
+                                                "name": "fldaoW0n6GnBEhJ7f",
+                                                "spec": {
+                                                    "name": "value",
+                                                    "label": "Record ID"
+                                                },
+                                                "type": "array",
+                                                "label": "Errores"
+                                            }
+                                        ],
+                                        "type": "collection",
+                                        "label": "Record"
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "name": "id",
+                                        "type": "text",
+                                        "label": "ID"
+                                    },
+                                    {
+                                        "name": "createdTime",
+                                        "type": "date",
+                                        "label": "Created Time"
+                                    },
+                                    {
+                                        "name": "Asunto",
+                                        "type": "text",
+                                        "label": "Asunto",
+                                        "multiline": true
+                                    },
+                                    {
+                                        "name": "Email remitente",
+                                        "type": "text",
+                                        "label": "Email remitente"
+                                    },
+                                    {
+                                        "name": "Cuerpo",
+                                        "type": "text",
+                                        "label": "Cuerpo",
+                                        "multiline": true
+                                    },
+                                    {
+                                        "name": "Thread ID",
+                                        "type": "text",
+                                        "label": "Thread ID",
+                                        "multiline": true
+                                    },
+                                    {
+                                        "name": "Categoria IA",
+                                        "type": "text",
+                                        "label": "Categoria IA"
+                                    },
+                                    {
+                                        "name": "Urgencia",
+                                        "type": "text",
+                                        "label": "Urgencia"
+                                    },
+                                    {
+                                        "name": "Borrador respuesta",
+                                        "type": "text",
+                                        "label": "Borrador respuesta",
+                                        "multiline": true
+                                    },
+                                    {
+                                        "name": "Estado",
+                                        "type": "text",
+                                        "label": "Estado"
+                                    },
+                                    {
+                                        "name": "Fecha envio",
+                                        "time": false,
+                                        "type": "date",
+                                        "label": "Fecha envio"
+                                    },
+                                    {
+                                        "name": "Cliente",
+                                        "spec": {
+                                            "label": "Record ID"
+                                        },
+                                        "type": "array",
+                                        "label": "Cliente"
+                                    },
+                                    {
+                                        "name": "Errores",
+                                        "spec": {
+                                            "label": "Record ID"
+                                        },
+                                        "type": "array",
+                                        "label": "Errores"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 6,
+                            "module": "gemini-ai:createACompletionGeminiPro",
+                            "version": 1,
+                            "parameters": {
+                                "__IMTCONN__": 9564232
+                            },
+                            "mapper": {
+                                "model": "gemini-3.5-flash",
+                                "contents": [
+                                    {
+                                        "role": "user",
+                                        "parts": [
+                                            {
+                                                "text": "Email recibido:\r\nAsunto: {{2.subject}}\r\nCuerpo: {{2.fullTextBody}}",
+                                                "type": "text"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "generationConfig": {
+                                    "imageConfig": {},
+                                    "thinkingConfig": {
+                                        "thinkingBudget": "0"
+                                    },
+                                    "maxOutputTokens": "8000",
+                                    "responseMimeType": "application/json"
+                                },
+                                "system_instruction": {
+                                    "parts": [
+                                        {
+                                            "text": "Sos el asistente de un estudio de liquidación de sueldos de Argentina.\r\nRecibís consultas de clientes (empresas) por email.\r\n\r\nTu tarea, en base al asunto y cuerpo del email:\r\n1. Clasificar la consulta en UNA de estas categorías exactas:\r\n   \"Liquidación\", \"Documentación\", \"ARCA-LSD\", \"Otro\"\r\n2. Asignar urgencia: \"Alta\", \"Media\" o \"Baja\"\r\n3. Redactar un borrador de respuesta profesional en español, tono cordial argentino, máximo 120 palabras, que termine con \"Saludos cordiales, [Estudio]\". No inventes montos, fechas ni datos que no estén en la consulta; si falta información, el borrador debe pedirla amablemente.\r\n\r\nFORMATO DE SALIDA (CRÍTICO):\r\n- Respondé ÚNICAMENTE con un objeto JSON válido. Nada de texto antes ni después. Sin markdown, sin comillas triples, sin la palabra json.\r\n- TODO el objeto JSON debe estar en UNA SOLA LÍNEA física, de { a }, sin presionar Enter jamás.\r\n- Dentro del valor de \"borrador\" está PROHIBIDO el salto de línea real. El borrador debe ser un único párrafo corrido, con las ideas separadas por puntos seguidos.\r\n- No uses comillas dobles dentro de los textos; si necesitás citar algo, usá comillas simples.\r\n\r\nEstructura exacta de la respuesta:\r\n{\"categoria\": \"...\", \"urgencia\": \"...\", \"borrador\": \"...\"}"
+                                        }
+                                    ]
+                                }
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1147,
+                                    "y": 4
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "model": {
+                                            "mode": "chose",
+                                            "label": "Gemini 3.5 Flash"
+                                        },
+                                        "contents": {
+                                            "mode": "chose",
+                                            "items": [
+                                                {
+                                                    "role": {
+                                                        "mode": "chose",
+                                                        "label": "User"
+                                                    },
+                                                    "parts": {
+                                                        "mode": "chose",
+                                                        "items": [
+                                                            {
+                                                                "type": {
+                                                                    "mode": "chose",
+                                                                    "label": "Text"
+                                                                }
+                                                            }
+                                                        ]
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        "serviceTier": {
+                                            "mode": "chose",
+                                            "label": "Empty"
+                                        },
+                                        "url_context": {
+                                            "mode": "chose"
+                                        },
+                                        "code_execution": {
+                                            "mode": "chose"
+                                        },
+                                        "safetySettings": {
+                                            "mode": "chose"
+                                        },
+                                        "generationConfig": {
+                                            "nested": {
+                                                "imageConfig": {
+                                                    "nested": {
+                                                        "imageSize": {
+                                                            "mode": "chose",
+                                                            "label": "Empty"
+                                                        }
+                                                    }
+                                                },
+                                                "stopSequences": {
+                                                    "mode": "chose"
+                                                },
+                                                "thinkingConfig": {
+                                                    "nested": {
+                                                        "thinking_level": {
+                                                            "mode": "chose",
+                                                            "label": "Empty"
+                                                        },
+                                                        "include_thoughts": {
+                                                            "mode": "chose"
+                                                        }
+                                                    }
+                                                },
+                                                "mediaResolution": {
+                                                    "mode": "chose",
+                                                    "label": "Empty"
+                                                },
+                                                "responseMimeType": {
+                                                    "mode": "chose",
+                                                    "label": "JSON Output"
+                                                },
+                                                "new_responseSchema": {
+                                                    "mode": "chose"
+                                                },
+                                                "responseModalities": {
+                                                    "mode": "chose"
+                                                }
+                                            }
+                                        },
+                                        "system_instruction": {
+                                            "nested": {
+                                                "parts": {
+                                                    "mode": "chose",
+                                                    "items": [
+                                                        null
+                                                    ]
+                                                }
+                                            }
+                                        },
+                                        "google_maps_context": {
+                                            "mode": "chose"
+                                        },
+                                        "google_search_context": {
+                                            "mode": "chose"
+                                        },
+                                        "file_search_store_context": {
+                                            "mode": "chose"
+                                        },
+                                        "function_declarations_context": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "gemini-ai-q9zyjp"
+                                            },
+                                            "label": "My Gemini AI connection"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:gemini-ai-q9zyjp",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "model",
+                                        "type": "select",
+                                        "label": "AI Model",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "contents",
+                                        "spec": [
+                                            {
+                                                "name": "role",
+                                                "type": "select",
+                                                "label": "Role",
+                                                "options": [
+                                                    {
+                                                        "label": "User",
+                                                        "value": "user"
+                                                    },
+                                                    {
+                                                        "label": "Model",
+                                                        "value": "model"
+                                                    }
+                                                ],
+                                                "required": true
+                                            },
+                                            {
+                                                "name": "parts",
+                                                "spec": [
+                                                    {
+                                                        "name": "type",
+                                                        "type": "select",
+                                                        "label": "Message Type",
+                                                        "options": [
+                                                            {
+                                                                "label": "Text",
+                                                                "value": "text",
+                                                                "nested": [
+                                                                    {
+                                                                        "name": "text",
+                                                                        "type": "text",
+                                                                        "label": "Text",
+                                                                        "required": true
+                                                                    }
+                                                                ]
+                                                            },
+                                                            {
+                                                                "label": "File",
+                                                                "value": "file",
+                                                                "nested": [
+                                                                    {
+                                                                        "name": "file_data",
+                                                                        "spec": [
+                                                                            {
+                                                                                "name": "mime_type",
+                                                                                "type": "text",
+                                                                                "label": "Mime Type",
+                                                                                "required": true
+                                                                            },
+                                                                            {
+                                                                                "help": "You can use public or signed URLs as input by using the URLs.",
+                                                                                "name": "file_uri",
+                                                                                "type": "text",
+                                                                                "label": "File URI",
+                                                                                "required": true
+                                                                            }
+                                                                        ],
+                                                                        "type": "collection",
+                                                                        "label": "File Data",
+                                                                        "required": true
+                                                                    }
+                                                                ]
+                                                            },
+                                                            {
+                                                                "label": "Function Call",
+                                                                "value": "functionCall",
+                                                                "nested": [
+                                                                    {
+                                                                        "name": "functionCall",
+                                                                        "spec": [
+                                                                            {
+                                                                                "help": "The name of the function to call.",
+                                                                                "name": "name",
+                                                                                "type": "text",
+                                                                                "label": "Name",
+                                                                                "required": true,
+                                                                                "validate": {
+                                                                                    "max": 64
+                                                                                }
+                                                                            },
+                                                                            {
+                                                                                "help": "The function parameters and values in JSON object format.",
+                                                                                "name": "args",
+                                                                                "type": "json",
+                                                                                "label": "Arguments"
+                                                                            },
+                                                                            {
+                                                                                "help": "The unique ID of the function call.",
+                                                                                "name": "id",
+                                                                                "type": "text",
+                                                                                "label": "Function Call ID"
+                                                                            }
+                                                                        ],
+                                                                        "type": "collection",
+                                                                        "label": "Function Call"
+                                                                    }
+                                                                ]
+                                                            },
+                                                            {
+                                                                "label": "Function Response",
+                                                                "value": "functionResponse",
+                                                                "nested": [
+                                                                    {
+                                                                        "name": "functionResponse",
+                                                                        "spec": [
+                                                                            {
+                                                                                "help": "The name of the function to call.",
+                                                                                "name": "name",
+                                                                                "type": "text",
+                                                                                "label": "Name",
+                                                                                "required": true,
+                                                                                "validate": {
+                                                                                    "max": 64
+                                                                                }
+                                                                            },
+                                                                            {
+                                                                                "help": "The function response in JSON object format.",
+                                                                                "name": "response",
+                                                                                "type": "json",
+                                                                                "label": "Response",
+                                                                                "required": true
+                                                                            }
+                                                                        ],
+                                                                        "type": "collection",
+                                                                        "label": "Function Response"
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ],
+                                                        "required": true
+                                                    },
+                                                    {
+                                                        "name": "thoughtSignature",
+                                                        "type": "text",
+                                                        "label": "Thought Signature"
+                                                    }
+                                                ],
+                                                "type": "array",
+                                                "label": "Parts",
+                                                "required": true
+                                            }
+                                        ],
+                                        "type": "array",
+                                        "label": "Messages",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "system_instruction",
+                                        "spec": [
+                                            {
+                                                "name": "parts",
+                                                "spec": {
+                                                    "name": "value",
+                                                    "spec": [
+                                                        {
+                                                            "name": "text",
+                                                            "type": "text",
+                                                            "label": "Value"
+                                                        }
+                                                    ],
+                                                    "type": "collection",
+                                                    "label": "Prompt"
+                                                },
+                                                "type": "array",
+                                                "label": "Prompts"
+                                            }
+                                        ],
+                                        "type": "collection",
+                                        "label": "System Instructions"
+                                    },
+                                    {
+                                        "name": "safetySettings",
+                                        "spec": [
+                                            {
+                                                "name": "category",
+                                                "type": "select",
+                                                "label": "Category",
+                                                "options": [
+                                                    {
+                                                        "label": "Harassment content",
+                                                        "value": "HARM_CATEGORY_HARASSMENT"
+                                                    },
+                                                    {
+                                                        "label": "Hate speech and content",
+                                                        "value": "HARM_CATEGORY_HATE_SPEECH"
+                                                    },
+                                                    {
+                                                        "label": "Sexually explicit content.",
+                                                        "value": "HARM_CATEGORY_SEXUALLY_EXPLICIT"
+                                                    },
+                                                    {
+                                                        "label": "Dangerous content:",
+                                                        "value": "HARM_CATEGORY_DANGEROUS_CONTENT"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "name": "threshold",
+                                                "type": "select",
+                                                "label": "Threshold",
+                                                "options": [
+                                                    {
+                                                        "label": "Block low and above.",
+                                                        "value": "BLOCK_LOW_AND_ABOVE"
+                                                    },
+                                                    {
+                                                        "label": "Block medium and above.",
+                                                        "value": "BLOCK_MEDIUM_AND_ABOVE"
+                                                    },
+                                                    {
+                                                        "label": "Block only high.",
+                                                        "value": "BLOCK_ONLY_HIGH"
+                                                    },
+                                                    {
+                                                        "label": "Block none.",
+                                                        "value": "BLOCK_NONE"
+                                                    }
+                                                ]
+                                            }
+                                        ],
+                                        "type": "array",
+                                        "label": "Safety Settings"
+                                    },
+                                    {
+                                        "name": "generationConfig",
+                                        "spec": [
+                                            {
+                                                "name": "stopSequences",
+                                                "spec": {
+                                                    "name": "value",
+                                                    "type": "text",
+                                                    "label": "Stop Sequence"
+                                                },
+                                                "type": "array",
+                                                "label": "Stop Sequences"
+                                            },
+                                            {
+                                                "name": "responseModalities",
+                                                "type": "select",
+                                                "label": "Response Modalities",
+                                                "multiple": true,
+                                                "validate": {
+                                                    "enum": [
+                                                        "text",
+                                                        "image"
+                                                    ]
+                                                }
+                                            },
+                                            {
+                                                "name": "maxOutputTokens",
+                                                "type": "number",
+                                                "label": "Max Output Tokens"
+                                            },
+                                            {
+                                                "name": "temperature",
+                                                "type": "number",
+                                                "label": "Temperature",
+                                                "validate": {
+                                                    "max": 1,
+                                                    "min": 0
+                                                }
+                                            },
+                                            {
+                                                "name": "topP",
+                                                "type": "number",
+                                                "label": "Top P",
+                                                "validate": {
+                                                    "max": 1,
+                                                    "min": 0
+                                                }
+                                            },
+                                            {
+                                                "name": "topK",
+                                                "type": "number",
+                                                "label": "Top K"
+                                            },
+                                            {
+                                                "name": "thinkingConfig",
+                                                "spec": [
+                                                    {
+                                                        "name": "thinkingBudget",
+                                                        "type": "number",
+                                                        "label": "Thinking Budget"
+                                                    },
+                                                    {
+                                                        "name": "include_thoughts",
+                                                        "type": "boolean",
+                                                        "label": "Include Thoughts"
+                                                    },
+                                                    {
+                                                        "name": "thinking_level",
+                                                        "type": "select",
+                                                        "label": "Thinking Level",
+                                                        "validate": {
+                                                            "enum": [
+                                                                "low",
+                                                                "high"
+                                                            ]
+                                                        }
+                                                    }
+                                                ],
+                                                "type": "collection",
+                                                "label": "Thinking Config"
+                                            },
+                                            {
+                                                "name": "mediaResolution",
+                                                "type": "select",
+                                                "label": "Media Resolution",
+                                                "validate": {
+                                                    "enum": [
+                                                        "media_resolution_low",
+                                                        "media_resolution_medium",
+                                                        "media_resolution_high"
+                                                    ]
+                                                }
+                                            },
+                                            {
+                                                "name": "imageConfig",
+                                                "spec": [
+                                                    {
+                                                        "name": "imageSize",
+                                                        "type": "select",
+                                                        "label": "Image Size",
+                                                        "validate": {
+                                                            "enum": [
+                                                                "1K",
+                                                                "2K",
+                                                                "4K"
+                                                            ]
+                                                        }
+                                                    }
+                                                ],
+                                                "type": "collection",
+                                                "label": "Image Configuration"
+                                            },
+                                            {
+                                                "name": "responseMimeType",
+                                                "type": "select",
+                                                "label": "Response Format"
+                                            },
+                                            {
+                                                "name": "responseSchema",
+                                                "type": "any",
+                                                "label": "Response Schema (Deprecated)"
+                                            },
+                                            {
+                                                "name": "new_responseSchema",
+                                                "spec": [
+                                                    {
+                                                        "name": "type",
+                                                        "type": "select",
+                                                        "label": "Value Type",
+                                                        "options": [
+                                                            {
+                                                                "label": "String",
+                                                                "value": "string",
+                                                                "nested": "rpc://gemini-ai/1/createResponseSchema?type=string"
+                                                            },
+                                                            {
+                                                                "label": "Enum",
+                                                                "value": "enum",
+                                                                "nested": "rpc://gemini-ai/1/createResponseSchema?type=enum"
+                                                            },
+                                                            {
+                                                                "label": "Number",
+                                                                "value": "number",
+                                                                "nested": "rpc://gemini-ai/1/createResponseSchema?type=number"
+                                                            },
+                                                            {
+                                                                "label": "Integer",
+                                                                "value": "integer",
+                                                                "nested": "rpc://gemini-ai/1/createResponseSchema?type=integer"
+                                                            },
+                                                            {
+                                                                "label": "Boolean",
+                                                                "value": "boolean",
+                                                                "nested": "rpc://gemini-ai/1/createResponseSchema?type=boolean"
+                                                            },
+                                                            {
+                                                                "label": "Object",
+                                                                "value": "object",
+                                                                "nested": "rpc://gemini-ai/1/createResponseSchema?type=object"
+                                                            }
+                                                        ]
+                                                    }
+                                                ],
+                                                "type": "array",
+                                                "label": "Response Schema"
+                                            }
+                                        ],
+                                        "type": "collection",
+                                        "label": "Generation configurations"
+                                    },
+                                    {
+                                        "name": "tools",
+                                        "type": "any",
+                                        "label": "Tools"
+                                    },
+                                    {
+                                        "name": "tool_config",
+                                        "type": "any",
+                                        "label": "Tool Config"
+                                    },
+                                    {
+                                        "name": "function_declarations_context",
+                                        "type": "boolean",
+                                        "label": "Function Declarations Grounding"
+                                    },
+                                    {
+                                        "name": "url_context",
+                                        "type": "boolean",
+                                        "label": "URL Context"
+                                    },
+                                    {
+                                        "name": "google_search_context",
+                                        "type": "boolean",
+                                        "label": "Google Search Grounding"
+                                    },
+                                    {
+                                        "name": "code_execution",
+                                        "type": "boolean",
+                                        "label": "Code Execution"
+                                    },
+                                    {
+                                        "name": "google_maps_context",
+                                        "type": "boolean",
+                                        "label": "Google Maps Grounding"
+                                    },
+                                    {
+                                        "name": "file_search_store_context",
+                                        "type": "boolean",
+                                        "label": "File Search Store Context"
+                                    },
+                                    {
+                                        "name": "serviceTier",
+                                        "type": "select",
+                                        "label": "Inference Service Tier"
+                                    }
+                                ],
+                                "advanced": true
+                            },
+                            "onerror": [
+                                {
+                                    "id": 10,
+                                    "module": "airtable:ActionCreateRecord",
+                                    "version": 3,
+                                    "parameters": {
+                                        "__IMTCONN__": 10016838
+                                    },
+                                    "mapper": {
+                                        "base": "appOIWJkEtmqtST5U",
+                                        "table": "tblazSnVLc27uxAys",
+                                        "record": {
+                                            "fldg8jER5zpkVl71v": "IA_Clasificar_Responder",
+                                            "fldqSdJA6FM0VquVl": "{{6.error.message}}",
+                                            "fldtdLYp7UNhw2dwb": [
+                                                "{{5.id}}"
+                                            ]
+                                        },
+                                        "typecast": false,
+                                        "useColumnId": false
+                                    },
+                                    "metadata": {
+                                        "designer": {
+                                            "x": 1155,
+                                            "y": 238
+                                        },
+                                        "restore": {
+                                            "expect": {
+                                                "base": {
+                                                    "label": "Triage_Consultas_Nomina"
+                                                },
+                                                "table": {
+                                                    "label": "Errores",
+                                                    "nested": [
+                                                        {
+                                                            "name": "record",
+                                                            "spec": [
+                                                                {
+                                                                    "name": "fldg8jER5zpkVl71v",
+                                                                    "type": "text",
+                                                                    "label": "Modulo",
+                                                                    "multiline": true
+                                                                },
+                                                                {
+                                                                    "name": "fldqSdJA6FM0VquVl",
+                                                                    "type": "text",
+                                                                    "label": "Mensaje error",
+                                                                    "multiline": true
+                                                                },
+                                                                {
+                                                                    "name": "fldtdLYp7UNhw2dwb",
+                                                                    "spec": {
+                                                                        "label": "Record ID"
+                                                                    },
+                                                                    "type": "array",
+                                                                    "label": "Consulta"
+                                                                }
+                                                            ],
+                                                            "type": "collection",
+                                                            "label": "Record"
+                                                        }
+                                                    ]
+                                                },
+                                                "record": {
+                                                    "nested": {
+                                                        "fldtdLYp7UNhw2dwb": {
+                                                            "mode": "chose",
+                                                            "items": [
+                                                                null
+                                                            ]
+                                                        }
+                                                    }
+                                                },
+                                                "typecast": {
+                                                    "mode": "chose"
+                                                },
+                                                "useColumnId": {
+                                                    "mode": "chose"
+                                                }
+                                            },
+                                            "parameters": {
+                                                "__IMTCONN__": {
+                                                    "data": {
+                                                        "scoped": "true",
+                                                        "connection": "airtable3"
+                                                    },
+                                                    "label": "Airtable Jony (User ID: usr4CoiQCAowxonTO)"
+                                                }
+                                            }
+                                        },
+                                        "parameters": [
+                                            {
+                                                "name": "__IMTCONN__",
+                                                "type": "account:airtable3,airtable2",
+                                                "label": "Connection",
+                                                "required": true
+                                            }
+                                        ],
+                                        "expect": [
+                                            {
+                                                "name": "base",
+                                                "type": "select",
+                                                "label": "Base",
+                                                "required": true
+                                            },
+                                            {
+                                                "name": "typecast",
+                                                "type": "boolean",
+                                                "label": "Smart links",
+                                                "required": true
+                                            },
+                                            {
+                                                "name": "useColumnId",
+                                                "type": "boolean",
+                                                "label": "Use Column ID",
+                                                "required": true
+                                            },
+                                            {
+                                                "name": "table",
+                                                "type": "select",
+                                                "label": "Table",
+                                                "required": true
+                                            },
+                                            {
+                                                "name": "record",
+                                                "spec": [
+                                                    {
+                                                        "name": "fldg8jER5zpkVl71v",
+                                                        "type": "text",
+                                                        "label": "Modulo"
+                                                    },
+                                                    {
+                                                        "name": "fldqSdJA6FM0VquVl",
+                                                        "type": "text",
+                                                        "label": "Mensaje error"
+                                                    },
+                                                    {
+                                                        "name": "fldtdLYp7UNhw2dwb",
+                                                        "spec": {
+                                                            "name": "value",
+                                                            "label": "Record ID"
+                                                        },
+                                                        "type": "array",
+                                                        "label": "Consulta"
+                                                    }
+                                                ],
+                                                "type": "collection",
+                                                "label": "Record"
+                                            }
+                                        ],
+                                        "interface": [
+                                            {
+                                                "name": "id",
+                                                "type": "text",
+                                                "label": "ID"
+                                            },
+                                            {
+                                                "name": "createdTime",
+                                                "type": "date",
+                                                "label": "Created Time"
+                                            },
+                                            {
+                                                "name": "Modulo",
+                                                "type": "text",
+                                                "label": "Modulo",
+                                                "multiline": true
+                                            },
+                                            {
+                                                "name": "Mensaje error",
+                                                "type": "text",
+                                                "label": "Mensaje error",
+                                                "multiline": true
+                                            },
+                                            {
+                                                "name": "Consulta",
+                                                "spec": {
+                                                    "label": "Record ID"
+                                                },
+                                                "type": "array",
+                                                "label": "Consulta"
+                                            },
+                                            {
+                                                "name": "Timestamp",
+                                                "type": "date",
+                                                "label": "Timestamp"
+                                            }
+                                        ]
+                                    },
+                                    "onerror": [
+                                        {
+                                            "id": 11,
+                                            "module": "builtin:Resume",
+                                            "version": 1,
+                                            "parameters": {},
+                                            "mapper": {
+                                                "id": "",
+                                                "Modulo": "",
+                                                "Consulta": [],
+                                                "Timestamp": "",
+                                                "createdTime": "",
+                                                "Mensaje error": "Fallo IA - continuado con valores por defecto"
+                                            },
+                                            "metadata": {
+                                                "designer": {
+                                                    "x": 1447,
+                                                    "y": 154
+                                                },
+                                                "restore": {
+                                                    "expect": {
+                                                        "Consulta": {
+                                                            "mode": "chose"
+                                                        }
+                                                    }
+                                                },
+                                                "expect": [
+                                                    {
+                                                        "name": "id",
+                                                        "type": "text",
+                                                        "label": "ID"
+                                                    },
+                                                    {
+                                                        "name": "createdTime",
+                                                        "type": "date",
+                                                        "label": "Created Time"
+                                                    },
+                                                    {
+                                                        "name": "Modulo",
+                                                        "type": "text"
+                                                    },
+                                                    {
+                                                        "name": "Mensaje error",
+                                                        "type": "text"
+                                                    },
+                                                    {
+                                                        "name": "Consulta",
+                                                        "spec": {
+                                                            "name": "value",
+                                                            "label": "Record ID"
+                                                        },
+                                                        "type": "array"
+                                                    },
+                                                    {
+                                                        "name": "Timestamp",
+                                                        "type": "date"
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": 7,
+                            "module": "json:ParseJSON",
+                            "version": 1,
+                            "parameters": {
+                                "type": 434057
+                            },
+                            "mapper": {
+                                "json": "{{6.result}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1447,
+                                    "y": -146
+                                },
+                                "restore": {
+                                    "parameters": {
+                                        "type": {
+                                            "label": "My data structure"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "type",
+                                        "type": "udt",
+                                        "label": "Data structure"
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "json",
+                                        "type": "text",
+                                        "label": "JSON string",
+                                        "required": true
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "help": "",
+                                        "name": "categoria",
+                                        "type": "text",
+                                        "label": "Categoria",
+                                        "default": null,
+                                        "required": false,
+                                        "multiline": false
+                                    },
+                                    {
+                                        "help": "",
+                                        "name": "urgencia",
+                                        "type": "text",
+                                        "label": "Urgencia",
+                                        "default": null,
+                                        "required": false,
+                                        "multiline": false
+                                    },
+                                    {
+                                        "help": "",
+                                        "name": "borrador",
+                                        "type": "text",
+                                        "label": "Borrador",
+                                        "default": null,
+                                        "required": false,
+                                        "multiline": false
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 8,
+                            "module": "airtable:ActionUpdateRecords",
+                            "version": 3,
+                            "parameters": {
+                                "__IMTCONN__": 10016838
+                            },
+                            "mapper": {
+                                "id": "{{5.id}}",
+                                "base": "appOIWJkEtmqtST5U",
+                                "table": "tbluOAwH2ckQxkWZc",
+                                "record": {
+                                    "fldSFIBwtztX8O4v7": "{{7.categoria}}",
+                                    "fldilwyq7SbceSZ9Z": "Procesado por IA",
+                                    "fldtb3B5lCfWCjUH8": "{{7.urgencia}}",
+                                    "fldws8Zs3BeDHgQ8Z": "{{7.borrador}}"
+                                },
+                                "typecast": false,
+                                "useColumnId": false
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1747,
+                                    "y": 4
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "base": {
+                                            "label": "Triage_Consultas_Nomina"
+                                        },
+                                        "table": {
+                                            "label": "Consultas"
+                                        },
+                                        "record": {
+                                            "nested": {
+                                                "fldSFIBwtztX8O4v7": {
+                                                    "mode": "edit"
+                                                },
+                                                "fldaoW0n6GnBEhJ7f": {
+                                                    "mode": "chose"
+                                                },
+                                                "fldilwyq7SbceSZ9Z": {
+                                                    "mode": "edit"
+                                                },
+                                                "fldjju4MJZvJ9ntm1": {
+                                                    "mode": "chose"
+                                                },
+                                                "fldtb3B5lCfWCjUH8": {
+                                                    "mode": "edit"
+                                                }
+                                            }
+                                        },
+                                        "typecast": {
+                                            "mode": "chose"
+                                        },
+                                        "useColumnId": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "airtable3"
+                                            },
+                                            "label": "Airtable Jony (User ID: usr4CoiQCAowxonTO)"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:airtable3,airtable2",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "base",
+                                        "type": "select",
+                                        "label": "Base",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "typecast",
+                                        "type": "boolean",
+                                        "label": "Smart links",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "useColumnId",
+                                        "type": "boolean",
+                                        "label": "Use Column ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "table",
+                                        "type": "select",
+                                        "label": "Table",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "id",
+                                        "type": "text",
+                                        "label": "Record ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "record",
+                                        "spec": [
+                                            {
+                                                "name": "fldcZ7ar0W0JbM5IS",
+                                                "type": "text",
+                                                "label": "Asunto"
+                                            },
+                                            {
+                                                "name": "fld6TPf6aQzTbqqux",
+                                                "type": "text",
+                                                "label": "Email remitente"
+                                            },
+                                            {
+                                                "name": "fld4lUwBDV5GlCDpX",
+                                                "type": "text",
+                                                "label": "Cuerpo"
+                                            },
+                                            {
+                                                "name": "fldMVcNT3u3HE67Wu",
+                                                "type": "text",
+                                                "label": "Thread ID"
+                                            },
+                                            {
+                                                "mode": "edit",
+                                                "name": "fldSFIBwtztX8O4v7",
+                                                "type": "select",
+                                                "label": "Categoria IA"
+                                            },
+                                            {
+                                                "mode": "edit",
+                                                "name": "fldtb3B5lCfWCjUH8",
+                                                "type": "select",
+                                                "label": "Urgencia"
+                                            },
+                                            {
+                                                "name": "fldws8Zs3BeDHgQ8Z",
+                                                "type": "text",
+                                                "label": "Borrador respuesta"
+                                            },
+                                            {
+                                                "mode": "edit",
+                                                "name": "fldilwyq7SbceSZ9Z",
+                                                "type": "select",
+                                                "label": "Estado"
+                                            },
+                                            {
+                                                "name": "fld3QktBVATperSLC",
+                                                "time": false,
+                                                "type": "date",
+                                                "label": "Fecha envio"
+                                            },
+                                            {
+                                                "name": "fldjju4MJZvJ9ntm1",
+                                                "spec": {
+                                                    "name": "value",
+                                                    "label": "Record ID"
+                                                },
+                                                "type": "array",
+                                                "label": "Cliente"
+                                            },
+                                            {
+                                                "name": "fldaoW0n6GnBEhJ7f",
+                                                "spec": {
+                                                    "name": "value",
+                                                    "label": "Record ID"
+                                                },
+                                                "type": "array",
+                                                "label": "Errores"
+                                            }
+                                        ],
+                                        "type": "collection",
+                                        "label": "Record"
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "name": "id",
+                                        "type": "text",
+                                        "label": "ID"
+                                    },
+                                    {
+                                        "name": "createdTime",
+                                        "type": "date",
+                                        "label": "Created Time"
+                                    },
+                                    {
+                                        "name": "Asunto",
+                                        "type": "text",
+                                        "label": "Asunto",
+                                        "multiline": true
+                                    },
+                                    {
+                                        "name": "Email remitente",
+                                        "type": "text",
+                                        "label": "Email remitente"
+                                    },
+                                    {
+                                        "name": "Cuerpo",
+                                        "type": "text",
+                                        "label": "Cuerpo",
+                                        "multiline": true
+                                    },
+                                    {
+                                        "name": "Thread ID",
+                                        "type": "text",
+                                        "label": "Thread ID",
+                                        "multiline": true
+                                    },
+                                    {
+                                        "name": "Categoria IA",
+                                        "type": "text",
+                                        "label": "Categoria IA"
+                                    },
+                                    {
+                                        "name": "Urgencia",
+                                        "type": "text",
+                                        "label": "Urgencia"
+                                    },
+                                    {
+                                        "name": "Borrador respuesta",
+                                        "type": "text",
+                                        "label": "Borrador respuesta",
+                                        "multiline": true
+                                    },
+                                    {
+                                        "name": "Estado",
+                                        "type": "text",
+                                        "label": "Estado"
+                                    },
+                                    {
+                                        "name": "Fecha envio",
+                                        "time": false,
+                                        "type": "date",
+                                        "label": "Fecha envio"
+                                    },
+                                    {
+                                        "name": "Cliente",
+                                        "spec": {
+                                            "label": "Record ID"
+                                        },
+                                        "type": "array",
+                                        "label": "Cliente"
+                                    },
+                                    {
+                                        "name": "Errores",
+                                        "spec": {
+                                            "label": "Record ID"
+                                        },
+                                        "type": "array",
+                                        "label": "Errores"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": 14,
+                            "module": "google-email:sendAnEmail",
+                            "version": 4,
+                            "parameters": {
+                                "__IMTCONN__": 10016707
+                            },
+                            "mapper": {
+                                "to": [
+                                    "jonyremolina2019@gmail.com"
+                                ],
+                                "content": "Nueva consulta procesada por IA.\r\n\r\nCliente: [{{3.`Nombre empresa`}}]\r\nCategoría: [{{7.categoria}}]\r\nUrgencia: [{{7.urgencia}}]\r\n\r\nBorrador propuesto:\r\n[{{7.borrador}}]\r\n\r\nAPROBAR: https://hook.us2.make.com/y3935pvbqhy8dv3ls64j96gc16dskv6a?id_consulta={{5.id}}&decision=aprobar\r\nRECHAZAR: https://hook.us2.make.com/y3935pvbqhy8dv3ls64j96gc16dskv6a?id_consulta={{5.id}}&decision=rechazar",
+                                "subject": "[APROBACIÓN] + {{2.subject}}",
+                                "bodyType": "rawHtml"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 2047,
+                                    "y": 4
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "cc": {
+                                            "mode": "chose"
+                                        },
+                                        "to": {
+                                            "mode": "chose",
+                                            "items": [
+                                                null
+                                            ]
+                                        },
+                                        "bcc": {
+                                            "mode": "chose"
+                                        },
+                                        "from": {
+                                            "mode": "chose",
+                                            "label": "Empty"
+                                        },
+                                        "bodyType": {
+                                            "label": "Raw HTML"
+                                        },
+                                        "attachments": {
+                                            "mode": "chose"
+                                        },
+                                        "emailHeaders": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "google-email"
+                                            },
+                                            "label": "My Gmail connection (jonyremolina2019@gmail.com)"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:google-email",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "to",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "email",
+                                            "label": "Recipient email address",
+                                            "required": true,
+                                            "validate": true
+                                        },
+                                        "type": "array",
+                                        "label": "To",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "subject",
+                                        "type": "text",
+                                        "label": "Subject"
+                                    },
+                                    {
+                                        "name": "bodyType",
+                                        "type": "select",
+                                        "label": "Body type",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "rawHtml",
+                                                "collection"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "attachments",
+                                        "spec": {
+                                            "name": "value",
+                                            "spec": [
+                                                {
+                                                    "name": "filename",
+                                                    "type": "filename",
+                                                    "label": "File name",
+                                                    "required": true,
+                                                    "semantic": "file:name"
+                                                },
+                                                {
+                                                    "name": "data",
+                                                    "type": "buffer",
+                                                    "label": "Data",
+                                                    "required": true,
+                                                    "semantic": "file:data"
+                                                }
+                                            ],
+                                            "type": "collection",
+                                            "label": "Attachment"
+                                        },
+                                        "type": "array",
+                                        "label": "Attachments"
+                                    },
+                                    {
+                                        "name": "from",
+                                        "type": "select",
+                                        "label": "From"
+                                    },
+                                    {
+                                        "name": "cc",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "email",
+                                            "label": "Recipient email address"
+                                        },
+                                        "type": "array",
+                                        "label": "CC recipients"
+                                    },
+                                    {
+                                        "name": "bcc",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "email",
+                                            "label": "Recipient email address"
+                                        },
+                                        "type": "array",
+                                        "label": "BCC recipients"
+                                    },
+                                    {
+                                        "name": "emailHeaders",
+                                        "spec": {
+                                            "name": "value",
+                                            "spec": [
+                                                {
+                                                    "name": "key",
+                                                    "type": "text",
+                                                    "label": "Key",
+                                                    "required": true
+                                                },
+                                                {
+                                                    "name": "value",
+                                                    "type": "text",
+                                                    "label": "Value"
+                                                }
+                                            ],
+                                            "type": "collection",
+                                            "label": "Email header"
+                                        },
+                                        "type": "array",
+                                        "label": "Additional email headers"
+                                    },
+                                    {
+                                        "name": "content",
+                                        "type": "text",
+                                        "label": "Content"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "flow": [
+                        {
+                            "id": 13,
+                            "module": "airtable:ActionCreateRecord",
+                            "version": 3,
+                            "parameters": {
+                                "__IMTCONN__": 10016838
+                            },
+                            "filter": {
+                                "name": "Cliente desconocido",
+                                "conditions": []
+                            },
+                            "mapper": {
+                                "base": "appOIWJkEtmqtST5U",
+                                "table": "tblazSnVLc27uxAys",
+                                "record": {
+                                    "fldg8jER5zpkVl71v": "Filtro cliente",
+                                    "fldqSdJA6FM0VquVl": "Remitente desconocido: {{2.fromEmail}}"
+                                },
+                                "typecast": false,
+                                "useColumnId": false
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 847,
+                                    "y": 154
+                                },
+                                "restore": {
+                                    "expect": {
+                                        "base": {
+                                            "label": "Triage_Consultas_Nomina"
+                                        },
+                                        "table": {
+                                            "label": "Errores",
+                                            "nested": [
+                                                {
+                                                    "name": "record",
+                                                    "spec": [
+                                                        {
+                                                            "name": "fldg8jER5zpkVl71v",
+                                                            "type": "text",
+                                                            "label": "Modulo",
+                                                            "multiline": true
+                                                        },
+                                                        {
+                                                            "name": "fldqSdJA6FM0VquVl",
+                                                            "type": "text",
+                                                            "label": "Mensaje error",
+                                                            "multiline": true
+                                                        },
+                                                        {
+                                                            "name": "fldtdLYp7UNhw2dwb",
+                                                            "spec": {
+                                                                "label": "Record ID"
+                                                            },
+                                                            "type": "array",
+                                                            "label": "Consulta"
+                                                        }
+                                                    ],
+                                                    "type": "collection",
+                                                    "label": "Record"
+                                                }
+                                            ]
+                                        },
+                                        "record": {
+                                            "nested": {
+                                                "fldtdLYp7UNhw2dwb": {
+                                                    "mode": "chose"
+                                                }
+                                            }
+                                        },
+                                        "typecast": {
+                                            "mode": "chose"
+                                        },
+                                        "useColumnId": {
+                                            "mode": "chose"
+                                        }
+                                    },
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "airtable3"
+                                            },
+                                            "label": "Airtable Jony (User ID: usr4CoiQCAowxonTO)"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:airtable3,airtable2",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "base",
+                                        "type": "select",
+                                        "label": "Base",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "typecast",
+                                        "type": "boolean",
+                                        "label": "Smart links",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "useColumnId",
+                                        "type": "boolean",
+                                        "label": "Use Column ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "table",
+                                        "type": "select",
+                                        "label": "Table",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "record",
+                                        "spec": [
+                                            {
+                                                "name": "fldg8jER5zpkVl71v",
+                                                "type": "text",
+                                                "label": "Modulo"
+                                            },
+                                            {
+                                                "name": "fldqSdJA6FM0VquVl",
+                                                "type": "text",
+                                                "label": "Mensaje error"
+                                            },
+                                            {
+                                                "name": "fldtdLYp7UNhw2dwb",
+                                                "spec": {
+                                                    "name": "value",
+                                                    "label": "Record ID"
+                                                },
+                                                "type": "array",
+                                                "label": "Consulta"
+                                            }
+                                        ],
+                                        "type": "collection",
+                                        "label": "Record"
+                                    }
+                                ],
+                                "interface": [
+                                    {
+                                        "name": "id",
+                                        "type": "text",
+                                        "label": "ID"
+                                    },
+                                    {
+                                        "name": "createdTime",
+                                        "type": "date",
+                                        "label": "Created Time"
+                                    },
+                                    {
+                                        "name": "Modulo",
+                                        "type": "text",
+                                        "label": "Modulo",
+                                        "multiline": true
+                                    },
+                                    {
+                                        "name": "Mensaje error",
+                                        "type": "text",
+                                        "label": "Mensaje error",
+                                        "multiline": true
+                                    },
+                                    {
+                                        "name": "Consulta",
+                                        "spec": {
+                                            "label": "Record ID"
+                                        },
+                                        "type": "array",
+                                        "label": "Consulta"
+                                    },
+                                    {
+                                        "name": "Timestamp",
+                                        "type": "date",
+                                        "label": "Timestamp"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "metadata": {
+        "instant": false,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "us2.make.com",
+        "notes": []
+    }
+}
